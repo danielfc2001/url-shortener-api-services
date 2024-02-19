@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Url Shortener API</title>
+    <link rel="stylesheet" href="http://127.0.0.1:4000/assets/index.css"/>
+</head>
+<body>
+    <% if (typeError === 404) { %>
+        <%- include('../components/404') %>
+    <% } %>
+    <% if (typeError === 401) { %>
+        <%- include('../components/401') %>
+    <% } %>
+    <% if (typeError === 500) { %>
+        <%- include('../components/500') %>
+    <% } %>
+    <%- include('../components/footer') %>
+</body>
+</html>

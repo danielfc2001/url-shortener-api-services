@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Rubik&display=swap');
+
+:root {
+    font-family: "Roboto", sans-serif;
+    --swamp-50: #f3faf9;
+    --swamp-100: #d7f0f0;
+    --swamp-200: #aee1e1;
+    --swamp-300: #7ec6ca;
+    --swamp-400: #53a7ae;
+    --swamp-500: #398b93;
+    --swamp-600: #2c6c75;
+    --swamp-700: #27575e;
+    --swamp-800: #23464c;
+    --swamp-900: #203d41;
+    --swamp-950: #0d1f23;
+}
+
+body {
+    background-color: var(--swamp-950);
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container errors styles */
+
+.container-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    width: 100%;
+}
+
+.container-error svg {
+    display: block;
+    width: 100%;
+    color: var(--swamp-100);
+}
+
+.container-error-text {
+    font-size: 2rem;
+    color: var(--swamp-300);
+}
+
+.container-error-strong {
+    color: var(--swamp-100);
+    margin-right: .5rem;
+}
+
+/* Footer Styles */
+
+.footer {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.footer-text {
+    display: block;
+    font-size: 1rem;
+    color: var(--swamp-400);
+    margin-block: 0;
+}
