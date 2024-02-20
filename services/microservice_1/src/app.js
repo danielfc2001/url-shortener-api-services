@@ -16,7 +16,6 @@ app.use(cors());
 app.use(json());
 app.use(morgan("dev"));
 connection();
-app.use(traceDbConnection);
 
 app.set("view engine", "ejs");
 app.set("views", "src/views");
