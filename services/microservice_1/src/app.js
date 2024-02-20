@@ -10,6 +10,7 @@ import { traceDbConnection } from "./middlewares/traceDbConnection.js";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(json());
@@ -23,8 +24,6 @@ app.set("views", "src/views");
 app.use(express.static(path.resolve(__dirname + "/public")));
 
 app.use("/", shortenerRoutes);
-
-const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
   console.log("Server on port %s", port);

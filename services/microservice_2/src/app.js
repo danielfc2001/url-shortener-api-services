@@ -5,6 +5,8 @@ import cors from "cors";
 import { connection } from "./database.js";
 import { userModel } from "./Schemas/userModel.js";
 import analyticsModel from "./Schemas/analyticsModel.js";
+import { getLastWeekDates } from "./libs/getLastWeekDates.js";
+import { getAnalyticsByDate } from "./libs/getAnalyticsByDate.js";
 
 const PORT = process.env.PORT || 8070;
 const app = express();
@@ -28,9 +30,14 @@ io.on("connection", (socket) => {
       const result = await userModel.find({});
       if (result) {
         socket.emit("result_service_stats_accounts", result.length);
+      } else {
+        throw {
+          message: "Error al procesar la peticion.",
+        };
       }
     } catch (error) {
       console.log(error);
+      socket.emit("error_service_stats_accounts", error.message);
     }
   });
   socket.on("get_service_stats_traffic", async () => {
@@ -40,24 +47,50 @@ io.on("connection", (socket) => {
       });
       if (getTodayTraffic) {
         socket.emit("result_service_stats_traffic", getTodayTraffic.length);
+      } else {
+        throw {
+          message: "Error al procesar la peticion.",
+        };
       }
     } catch (error) {
       console.log(error);
+      socket.emit("error_service_stats_traffic", error.message);
     }
   });
   socket.on("get_url_traffic", async (id) => {
     try {
-      console.log(id);
-      const result = await analyticsModel.find({
-        urlId: id,
-        date: new Date().toLocaleDateString(),
-      });
-      console.log(result);
-      if (result) {
-        socket.emit("result_url_traffic", result.length);
+      const lastWeekDates = await getLastWeekDates();
+      const lastWeekMatches = [];
+      if (lastWeekDates) {
+        console.log(lastWeekDates);
+        for (let i = 0; i < lastWeekDates.length; i++) {
+          const match = await getAnalyticsByDate(lastWeekDates[i], id);
+          if (match) {
+            console.log(match);
+            lastWeekMatches.push(match);
+          }
+        }
+        /*         const matches = lastWeekDates.map(async (el) => {
+        }); */
+        const result = await analyticsModel.find({
+          urlId: id,
+          date: new Date().toLocaleDateString(),
+        });
+        if (result && lastWeekMatches.length === 5) {
+          console.log(lastWeekMatches);
+          socket.emit("result_url_traffic", {
+            today: result.length,
+            lastWeek: lastWeekMatches,
+          });
+        } else {
+          throw {
+            message: "Error al procesar la peticion.",
+          };
+        }
       }
     } catch (error) {
       console.log(error);
+      socket.emit("error_url_traffic", error.message);
     }
   });
 });

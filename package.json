@@ -7,7 +7,9 @@
     "services/*"
   ],
   "scripts": {
-    "dev": "pm2 start ecosystem.config.js"
+    "dev": "pm2 start ecosystem.config.js",
+    "start:service1": "node ./services/microservice_1/src/app.js",
+    "start:service2": "node ./services/microservice_2/src/app.js"
   },
   "keywords": [],
   "author": "",
