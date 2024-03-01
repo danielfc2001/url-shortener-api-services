@@ -5,7 +5,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import shortenerRoutes from "./routes/shortener.routes.js";
 import { connection } from "./connection.js";
-import { traceDbConnection } from "./middlewares/traceDbConnection.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);

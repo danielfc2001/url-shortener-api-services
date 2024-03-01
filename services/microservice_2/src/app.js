@@ -3,10 +3,8 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import cors from "cors";
 import { connection } from "./database.js";
-import { userModel } from "./Schemas/userModel.js";
-import analyticsModel from "./Schemas/analyticsModel.js";
-import { getLastWeekDates } from "./libs/getLastWeekDates.js";
-import { getAnalyticsByDate } from "./libs/getAnalyticsByDate.js";
+import { commentsModel } from "./Schemas/commentsModel.js";
+import { getAllComments } from "./controllers/comments.controller.js";
 
 const PORT = process.env.PORT || 8070;
 const app = express();
@@ -20,77 +18,31 @@ const io = new Server(httpServer, {
 connection();
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.send("Hello world");
-});
+app.get("/", getAllComments);
 
 io.on("connection", (socket) => {
-  socket.on("get_service_stats_accounts", async () => {
+  socket.on("create_comment", async (comment) => {
     try {
-      const result = await userModel.find({});
-      if (result) {
-        socket.emit("result_service_stats_accounts", result.length);
-      } else {
-        throw {
-          message: "Error al procesar la peticion.",
-        };
-      }
-    } catch (error) {
-      console.log(error);
-      socket.emit("error_service_stats_accounts", error.message);
-    }
-  });
-  socket.on("get_service_stats_traffic", async () => {
-    try {
-      const getTodayTraffic = await analyticsModel.find({
-        date: new Date().toLocaleDateString(),
+      const newComment = new commentsModel({
+        creator: comment.creator,
+        comment: comment.comment,
+        rate: comment.rate,
+        date: new Date().getTime(),
       });
-      if (getTodayTraffic) {
-        socket.emit("result_service_stats_traffic", getTodayTraffic.length);
-      } else {
+      console.log(newComment);
+      const savedComment = await newComment.save();
+      if (!savedComment)
         throw {
-          message: "Error al procesar la peticion.",
+          message: "No se a podido crear la nueva entrada.",
         };
-      }
+      socket.broadcast.emit("result_create_comment", {
+        creator: savedComment.creator,
+        comment: savedComment.comment,
+        rate: savedComment.rate,
+        date: savedComment.date.toString() ?? undefined,
+      });
     } catch (error) {
       console.log(error);
-      socket.emit("error_service_stats_traffic", error.message);
-    }
-  });
-  socket.on("get_url_traffic", async (id) => {
-    try {
-      const lastWeekDates = await getLastWeekDates();
-      const lastWeekMatches = [];
-      if (lastWeekDates) {
-        console.log(lastWeekDates);
-        for (let i = 0; i < lastWeekDates.length; i++) {
-          const match = await getAnalyticsByDate(lastWeekDates[i], id);
-          if (match) {
-            console.log(match);
-            lastWeekMatches.push(match);
-          }
-        }
-        /*         const matches = lastWeekDates.map(async (el) => {
-        }); */
-        const result = await analyticsModel.find({
-          urlId: id,
-          date: new Date().toLocaleDateString(),
-        });
-        if (result && lastWeekMatches.length === 5) {
-          console.log(lastWeekMatches);
-          socket.emit("result_url_traffic", {
-            today: result.length,
-            lastWeek: lastWeekMatches,
-          });
-        } else {
-          throw {
-            message: "Error al procesar la peticion.",
-          };
-        }
-      }
-    } catch (error) {
-      console.log(error);
-      socket.emit("error_url_traffic", error.message);
     }
   });
 });
