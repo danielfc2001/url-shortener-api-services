@@ -4,7 +4,10 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { connection } from "./database.js";
 import { commentsModel } from "./Schemas/commentsModel.js";
-import { getAllComments } from "./controllers/comments.controller.js";
+import {
+  getAllComments,
+  getCommentsInformation,
+} from "./controllers/comments.controller.js";
 
 const PORT = process.env.PORT || 8070;
 const app = express();
@@ -19,6 +22,8 @@ connection();
 app.use(cors());
 
 app.get("/", getAllComments);
+
+app.get("/commentsInfo", getCommentsInformation);
 
 io.on("connection", (socket) => {
   socket.on("create_comment", async (comment) => {
