@@ -24,10 +24,8 @@ export const redirectToUrl = async (req, res) => {
         typeError: 401,
       });
     }
-    console.log(req);
-    registerNewUrlAccess(match[0]._id, req._remoteAddress)
+    registerNewUrlAccess(match[0]._id, req.get("true-client-ip") ?? "::1")
       .then((response) => {
-        console.log(req.ip);
         console.log(response);
         res.set({
           "Cache-Control": "no-store",
