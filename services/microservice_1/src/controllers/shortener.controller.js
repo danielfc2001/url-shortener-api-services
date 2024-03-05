@@ -27,6 +27,8 @@ export const redirectToUrl = async (req, res) => {
 
     registerNewUrlAccess(match[0]._id, req)
       .then((response) => {
+        console.log(req.ip);
+        console.log(response);
         res.set({
           "Cache-Control": "no-store",
         });

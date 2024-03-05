@@ -6,6 +6,7 @@ export const connection = async () => {
   try {
     const dbConnection = await mongoose.connect(
       `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.8uoiccy.mongodb.net/?retryWrites=true&w=majority`
+      /* `mongodb://127.0.0.1:27017/urlShortener` */
     );
     if (dbConnection) {
       console.log("Conectado a la base de datos");
