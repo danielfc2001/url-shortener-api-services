@@ -24,8 +24,8 @@ export const redirectToUrl = async (req, res) => {
         typeError: 401,
       });
     }
-
-    registerNewUrlAccess(match[0]._id, req)
+    console.log(req);
+    registerNewUrlAccess(match[0]._id, req._remoteAddress)
       .then((response) => {
         console.log(req.ip);
         console.log(response);

@@ -13,7 +13,7 @@ const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(json());
-app.use(morgan("common"));
+app.use(morgan("combined"));
 connection();
 
 app.set("view engine", "ejs");

@@ -1,10 +1,10 @@
 import analyticsModel from "../schemas/analyticsModel.js";
 
-export const registerNewUrlAccess = (id, requestObj) => {
+export const registerNewUrlAccess = (id, ip) => {
   return new Promise(async (resolve, reject) => {
     const newAnalytic = new analyticsModel({
       urlId: id,
-      ipDirection: requestObj._remoteAddress,
+      ipDirection: ip,
       date: new Date().toLocaleDateString(),
     });
     const result = await newAnalytic.save();
