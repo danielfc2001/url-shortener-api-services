@@ -71,11 +71,10 @@ export const createShortenedUrl = async (req, res) => {
           .substring(2)}`,
         isUnlocked: true,
       });
-      await newUrl.save();
-      const allUrls = await urlModel.find({ userId: user._id });
-      if (allUrls) {
+      const savedUrl = await newUrl.save();
+      if (savedUrl) {
         res.status(201).json({
-          data: allUrls,
+          data: savedUrl,
         });
       }
     } else {
@@ -132,9 +131,10 @@ export const deleteShortenedUrl = async (req, res) => {
       return res
         .status(400)
         .json({ message: "No se han podido eliminar los datos." });
-    return res
-      .status(200)
-      .json({ message: "Datos eliminados satisfactoriamente." });
+    return res.status(200).json({
+      message: "Datos eliminados satisfactoriamente.",
+      deleted: urlDeleted,
+    });
   } catch (error) {
     res
       .status(500)
